@@ -1,0 +1,10 @@
+{
+  "0.3.2": {
+    "en": "Initial App Store publication with required assets and optimized settings UI.",
+    "he": "פרסום ראשוני לחנות עם נכסים גרפיים מעודכנים וממשק הגדרות אופטימלי."
+  },
+  "0.3.3": {
+    "en": "Patch release for Homey testing deployment.",
+    "he": "גרסת תיקון לפריסה לבדיקה ב-Homey."
+  }
+}

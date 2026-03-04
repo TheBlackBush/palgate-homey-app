@@ -1,0 +1,33 @@
+{
+  "settings": {
+    "title": "הגדרות PalGate",
+    "subtitle": "חבר את חשבון PalGate והגדר את התנהגות השער.",
+    "link": "קישור עם אפליקציית PalGate",
+    "connection": "חיבור",
+    "phone": "מספר טלפון",
+    "tokenType": "סוג טוקן",
+    "sessionToken": "Session Token (hex)",
+    "show": "הצג",
+    "hide": "הסתר",
+    "behavior": "התנהגות",
+    "autoOff": "השהיית כיבוי אוטומטית (ms, 2000-60000)",
+    "save": "שמור",
+    "qrHint": "פתח את אפליקציית PalGate, עבור אל Device Linking > Link a Device וסרוק את קוד ה-QR. הקישור יושלם וההגדרות יעודכנו אוטומטית."
+  },
+  "status": {
+    "required": "Token ומספר טלפון הם שדות חובה",
+    "saveTokenFail": "שמירת טוקן נכשלה: ",
+    "savePhoneFail": "שמירת מספר טלפון נכשלה: ",
+    "saveTypeFail": "שמירת סוג טוקן נכשלה: ",
+    "saveAutoOffFail": "שמירת השהיה אוטומטית נכשלה: ",
+    "saved": "נשמר בהצלחה.",
+    "startLinkFirst": "יש להתחיל קישור קודם כדי ליצור QR.",
+    "checkLinkFail": "בדיקת קישור נכשלה: ",
+    "waiting": "ממתין לאישור קישור מאפליקציית PalGate...",
+    "stillWaiting": "עדיין ממתין. השלם סריקת QR באפליקציית PalGate.",
+    "linkFail": "הקישור נכשל: ",
+    "linkSuccess": "הקישור הצליח. הפרטים עודכנו אוטומטית. לחץ שמור כדי לשמור.",
+    "initFail": "אתחול קישור נכשל: ",
+    "qrReady": "QR מוכן. סרוק מתוך אפליקציית PalGate, והזיהוי אוטומטי..."
+  }
+}

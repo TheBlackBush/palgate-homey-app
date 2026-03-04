@@ -1,0 +1,27 @@
+{
+  "name": {
+    "en": "PalGate Gate"
+  },
+  "class": "garagedoor",
+  "capabilities": [
+    "garagedoor_closed"
+  ],
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "images": {
+    "small": "/drivers/palgate-gate/assets/images/small.png",
+    "large": "/drivers/palgate-gate/assets/images/large.png",
+    "xlarge": "/drivers/palgate-gate/assets/images/xlarge.png"
+  }
+}

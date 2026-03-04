@@ -1,0 +1,33 @@
+{
+  "settings": {
+    "title": "PalGate Settings",
+    "subtitle": "Link your PalGate account and configure gate behavior.",
+    "link": "Link with PalGate App",
+    "connection": "Connection",
+    "phone": "Phone Number",
+    "tokenType": "Token Type",
+    "sessionToken": "Session Token (hex)",
+    "show": "Show",
+    "hide": "Hide",
+    "behavior": "Behavior",
+    "autoOff": "Auto turn-off delay (ms, 2000-60000)",
+    "save": "Save",
+    "qrHint": "Open the PalGate App, and navigate to Device Linking > Link a Device and then scan the QR code. The linking will complete and configuration will be updated automatically."
+  },
+  "status": {
+    "required": "Token and phone are required",
+    "saveTokenFail": "Failed saving token: ",
+    "savePhoneFail": "Failed saving phone: ",
+    "saveTypeFail": "Failed saving token type: ",
+    "saveAutoOffFail": "Failed saving auto off delay: ",
+    "saved": "Saved successfully.",
+    "startLinkFirst": "Start linking first to generate QR.",
+    "checkLinkFail": "Link check failed: ",
+    "waiting": "Waiting for confirmation from PalGate app...",
+    "stillWaiting": "Still waiting. Please complete QR scan in PalGate app.",
+    "linkFail": "Link failed: ",
+    "linkSuccess": "Link successful. Details were updated automatically. Click Save to persist.",
+    "initFail": "Failed to initialize link: ",
+    "qrReady": "QR ready. Scan from PalGate app, detection is automatic..."
+  }
+}

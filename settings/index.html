@@ -1,0 +1,319 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+  <style>
+    :root {
+      --brand-blue: #23aae1;
+      --brand-gray: #414143;
+    }
+
+    .brand-shell { padding-top: 8px; }
+
+    .brand-card {
+      border: 1px solid #e6edf3;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+      background: #f8fcff;
+    }
+
+    .brand-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .brand-primary {
+      background: var(--brand-blue) !important;
+      color: #fff !important;
+      border: 0 !important;
+    }
+
+    .brand-secondary {
+      background: #eef4f8 !important;
+      color: var(--brand-gray) !important;
+      border: 1px solid #d6e3ee !important;
+    }
+
+    #qrWrap {
+      margin-top: 10px;
+      display: none;
+      border: 1px dashed #b8d9ea;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    #qr {
+      max-width: 220px;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #d6e3ee;
+      background: #fff;
+    }
+
+    .hint { opacity: .8; font-size: 12px; margin-top: 6px; }
+
+    #status {
+      margin-top: 12px;
+      min-height: 20px;
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      display: none;
+      font-weight: 600;
+    }
+
+    .token-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .brand-footer {
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .brand-footer img {
+      max-width: 90px;
+      width: 100%;
+      height: auto;
+      opacity: .95;
+    }
+
+    .brand-footer .caption {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="brand-shell">
+    <header class="homey-header">
+      <h1 class="homey-title" id="title">PalGate Settings</h1>
+      <p class="homey-subtitle" id="subtitle">Link your PalGate account and configure gate behavior.</p>
+    </header>
+
+    <div class="brand-card">
+      <div class="brand-actions">
+        <button class="homey-button-primary brand-primary" id="linkStart">Link with PalGate App</button>
+      </div>
+
+      <div id="qrWrap">
+        <img id="qr" alt="PalGate link QR" />
+        <div class="hint" id="qrHint">Open the PalGate App, and navigate to Device Linking > Link a Device and then scan the QR code. The linking will complete and configuration will be updated automatically.</div>
+      </div>
+    </div>
+
+    <form class="homey-form" onsubmit="return false;">
+      <fieldset class="homey-form-fieldset">
+        <legend class="homey-form-legend" id="legendConnection">Connection</legend>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="phone" id="labelPhone">Phone Number</label>
+          <input class="homey-form-input" id="phone" type="text" inputmode="numeric" placeholder="9725xxxxxxx" />
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="type" id="labelType">Token Type</label>
+          <select class="homey-form-select" id="type">
+            <option value="0">0 - SMS</option>
+            <option value="1">1 - Primary</option>
+            <option value="2">2 - Secondary</option>
+          </select>
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="token" id="labelToken">Session Token (hex)</label>
+          <div class="token-row">
+            <input class="homey-form-input" id="token" type="password" placeholder="Paste token" />
+            <button class="homey-button-secondary brand-secondary" id="toggleToken" type="button">Show</button>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="homey-form-fieldset">
+        <legend class="homey-form-legend" id="legendBehavior">Behavior</legend>
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="autoOffMs" id="labelAutoOff">Auto turn-off delay (ms, 2000-60000)</label>
+          <input class="homey-form-input" id="autoOffMs" type="number" min="2000" max="60000" step="100" value="5000" />
+        </div>
+      </fieldset>
+
+      <button class="homey-button-primary-full brand-primary" id="save">Save</button>
+    </form>
+
+    <div id="status"></div>
+
+    <div class="brand-footer">
+      <img src="./assets/palgate-logo.png" alt="PalGate logo" />
+      <div class="caption">PalGate</div>
+    </div>
+  </div>
+
+  <script>
+    let linkUniqueId = null;
+    let pollTimer = null;
+    let pollStartedAt = 0;
+    let _homey = null;
+
+    function t(key, fallback) {
+      try { return (_homey && _homey.__(key)) || fallback; } catch (e) { return fallback; }
+    }
+
+    function setStatus(msg, isError) {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.style.display = 'block';
+      if (isError) {
+        el.style.color = '#991b1b';
+        el.style.background = '#fee2e2';
+        el.style.border = '1px solid #fecaca';
+      } else {
+        el.style.color = '#065f46';
+        el.style.background = '#dcfce7';
+        el.style.border = '1px solid #bbf7d0';
+      }
+    }
+
+    function clampAutoOff(v) {
+      let n = Number(v);
+      if (!Number.isFinite(n)) n = 5000;
+      if (n < 2000) n = 2000;
+      if (n > 60000) n = 60000;
+      return Math.round(n);
+    }
+
+    function saveAll(Homey) {
+      const token = document.getElementById('token').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const type = Number(document.getElementById('type').value);
+      const autoOffMs = clampAutoOff(document.getElementById('autoOffMs').value);
+      document.getElementById('autoOffMs').value = String(autoOffMs);
+
+      if (!token || !phone) { const b=document.getElementById('save'); if (b){b.disabled=false; b.textContent=t('settings.save','Save');} return setStatus(t('status.required','Token and phone are required'), true); }
+
+      Homey.set('palgate_session_token', token, (e1) => {
+        if (e1) { const b=document.getElementById('save'); if (b){b.disabled=false; b.textContent=t('settings.save','Save');} return setStatus(t('status.saveTokenFail','Failed saving token: ') + e1.message, true); }
+        Homey.set('palgate_phone_number', phone, (e2) => {
+          if (e2) { const b=document.getElementById('save'); if (b){b.disabled=false; b.textContent=t('settings.save','Save');} return setStatus(t('status.savePhoneFail','Failed saving phone: ') + e2.message, true); }
+          Homey.set('palgate_token_type', type, (e3) => {
+            if (e3) { const b=document.getElementById('save'); if (b){b.disabled=false; b.textContent=t('settings.save','Save');} return setStatus(t('status.saveTypeFail','Failed saving token type: ') + e3.message, true); }
+            Homey.set('palgate_auto_off_ms', autoOffMs, (e4) => {
+              if (e4) { const b=document.getElementById('save'); if (b){b.disabled=false; b.textContent=t('settings.save','Save');} return setStatus(t('status.saveAutoOffFail','Failed saving auto off delay: ') + e4.message, true); }
+              setStatus(t('status.saved','Saved successfully.'), false);
+              const saveBtn = document.getElementById('save');
+              if (saveBtn) {
+                const originalText = t('settings.save', 'Save');
+                saveBtn.textContent = 'Saved ✓';
+                saveBtn.disabled = true;
+                setTimeout(() => { saveBtn.textContent = originalText; saveBtn.disabled = false; }, 1800);
+              }
+            });
+          });
+        });
+      });
+    }
+
+    function stopPolling() {
+      if (pollTimer) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+      }
+    }
+
+    function checkLink(Homey, silentWaiting = false) {
+      if (!linkUniqueId) return setStatus(t('status.startLinkFirst','Start linking first to generate QR.'), true);
+
+      Homey.api('GET', '/confirm_link?uniqueId=' + encodeURIComponent(linkUniqueId), null, (err, result) => {
+        if (err || !result) return setStatus(t('status.checkLinkFail','Link check failed: ') + ((err && err.message) || 'unknown error'), true);
+
+        if (result.waiting) {
+          if (!silentWaiting) setStatus(t('status.waiting','Waiting for confirmation from PalGate app...'), false);
+          if (Date.now() - pollStartedAt > 120000) {
+            stopPolling();
+            setStatus(t('status.stillWaiting','Still waiting. Please complete QR scan in PalGate app.'), true);
+          }
+          return;
+        }
+
+        if (!result.success) {
+          stopPolling();
+          return setStatus(t('status.linkFail','Link failed: ') + (result.error || 'unknown error'), true);
+        }
+
+        stopPolling();
+        document.getElementById('phone').value = String(result.phoneNumber || '');
+        document.getElementById('token').value = String(result.sessionToken || '');
+        document.getElementById('type').value = String(result.tokenType);
+        document.getElementById('qr').src = '';
+        document.getElementById('qrWrap').style.display = 'none';
+        setStatus(t('status.linkSuccess','Link successful. Details were updated automatically. Click Save to persist.'), false);
+      });
+    }
+
+    function startPolling(Homey) {
+      stopPolling();
+      pollStartedAt = Date.now();
+      pollTimer = setInterval(() => checkLink(Homey, true), 3000);
+    }
+
+    function onHomeyReady(Homey) {
+      _homey = Homey;
+
+      document.getElementById('title').textContent = t('settings.title', 'PalGate Settings');
+      document.getElementById('subtitle').textContent = t('settings.subtitle', 'Link your PalGate account and configure gate behavior.');
+      document.getElementById('linkStart').textContent = t('settings.link', 'Link with PalGate App');
+      document.getElementById('qrHint').textContent = t('settings.qrHint', 'Open the PalGate App, and navigate to Device Linking > Link a Device and then scan the QR code. The linking will complete and configuration will be updated automatically.');
+      document.getElementById('legendConnection').textContent = t('settings.connection', 'Connection');
+      document.getElementById('labelPhone').textContent = t('settings.phone', 'Phone Number');
+      document.getElementById('labelType').textContent = t('settings.tokenType', 'Token Type');
+      document.getElementById('labelToken').textContent = t('settings.sessionToken', 'Session Token (hex)');
+      document.getElementById('legendBehavior').textContent = t('settings.behavior', 'Behavior');
+      document.getElementById('labelAutoOff').textContent = t('settings.autoOff', 'Auto turn-off delay (ms, 2000-60000)');
+      document.getElementById('save').textContent = t('settings.save', 'Save');
+      document.getElementById('toggleToken').textContent = t('settings.show', 'Show');
+
+      Homey.ready();
+
+      Homey.get('palgate_session_token', (_, v) => { if (v) document.getElementById('token').value = v; });
+      Homey.get('palgate_phone_number', (_, v) => { if (v) document.getElementById('phone').value = v; });
+      Homey.get('palgate_token_type', (_, v) => { if (v !== null && v !== undefined) document.getElementById('type').value = String(v); });
+      Homey.get('palgate_auto_off_ms', (_, v) => { if (v !== null && v !== undefined) document.getElementById('autoOffMs').value = String(v); });
+
+      document.getElementById('save').addEventListener('click', () => {
+        const saveBtn = document.getElementById('save');
+        const originalText = saveBtn.textContent;
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+        saveAll(Homey);
+      });
+
+      document.getElementById('toggleToken').addEventListener('click', () => {
+        const token = document.getElementById('token');
+        const btn = document.getElementById('toggleToken');
+        const isHidden = token.type === 'password';
+        token.type = isHidden ? 'text' : 'password';
+        btn.textContent = isHidden ? t('settings.hide', 'Hide') : t('settings.show', 'Show');
+      });
+
+      document.getElementById('linkStart').addEventListener('click', () => {
+        Homey.api('GET', '/init_link', null, (err, result) => {
+          if (err || !result || !result.success) {
+            return setStatus(t('status.initFail','Failed to initialize link: ') + ((err && err.message) || (result && result.error) || 'unknown error'), true);
+          }
+          linkUniqueId = result.uniqueId;
+          document.getElementById('qr').src = result.qrUrl;
+          document.getElementById('qrWrap').style.display = 'block';
+          setStatus(t('status.qrReady','QR ready. Scan from PalGate app, detection is automatic...'), false);
+          startPolling(Homey);
+        });
+      });
+
+      window.addEventListener('beforeunload', stopPolling);
+    }
+  </script>
+</body>
+</html>
