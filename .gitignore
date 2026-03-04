@@ -4,6 +4,7 @@ node_modules/
 # Homey build/runtime artifacts
 .homeybuild/
 .homeycompose/
+.homeychangelog.json
 
 # Environment & secrets
 .env
