@@ -105,6 +105,11 @@
     }
   },
   "homepage": "https://www.pal-es.com",
+  "source": "https://github.com/BuSHari/palgate-homey-app",
+  "bugs": {
+    "url": "https://github.com/BuSHari/palgate-homey-app/issues"
+  },
+  "support": "https://github.com/BuSHari/palgate-homey-app/issues",
   "tags": {
     "en": [
       "palgate",
