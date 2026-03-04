@@ -1,6 +1,9 @@
 # PalGate Homey App (converted from homebridge-palgate)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/BuSHari/palgate-homey-app?sort=semver)](https://github.com/BuSHari/palgate-homey-app/releases)
+[![GitHub last commit](https://img.shields.io/github/last-commit/BuSHari/palgate-homey-app)](https://github.com/BuSHari/palgate-homey-app/commits/main)
+[![GitHub issues](https://img.shields.io/github/issues/BuSHari/palgate-homey-app)](https://github.com/BuSHari/palgate-homey-app/issues)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](./LICENSE)
 
 ## Current status
 
