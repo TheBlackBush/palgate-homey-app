@@ -1,5 +1,7 @@
 # PalGate Homey App (converted from homebridge-palgate)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 ## Current status
 
 Prototype conversion (SDK v3) with:
@@ -31,3 +33,7 @@ homey app run
 
 - This app triggers gate open; it does not provide reliable physical open/closed state from PalGate.
 - Verify legal/ToS compliance before public distribution.
+
+## License
+
+MIT — see [LICENSE](./LICENSE).
