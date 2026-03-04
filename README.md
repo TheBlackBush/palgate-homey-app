@@ -37,6 +37,16 @@ homey app run
 - This app triggers gate open; it does not provide reliable physical open/closed state from PalGate.
 - Verify legal/ToS compliance before public distribution.
 
+## Credits
+
+Original plugin created by [@RoeiOfri](https://github.com/RoeiOfri).
+
+API logic discovered by [@DonutByte](https://github.com/DonutByte).
+
+Rewrite and platform migration by [@Knilo](https://github.com/Knilo).
+
+Homey app conversion by [@BuSHari](https://github.com/BuSHari).
+
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+GPL-3.0 — see [LICENSE](./LICENSE).
