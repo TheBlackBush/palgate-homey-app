@@ -31,9 +31,6 @@ class PalGateGateDevice extends Homey.Device {
         this.setCapabilityValue('garagedoor_closed', true).catch(this.error);
       }, autoOffMs);
 
-      if (this.homey?.app?.triggerGateOpened) {
-        await this.homey.app.triggerGateOpened(this);
-      }
     } catch (err) {
       this.error('PalGate openGate error:', err?.message || err);
       // Always return UI to closed on API failure.

@@ -9,5 +9,9 @@
   },
   "0.3.4": {
     "en": "Initial public release for Homey App Store: PalGate gate control, improved app metadata (source/support/issues), GPLv3 license, and project documentation updates."
+  },
+  "0.3.5": {
+    "en": "Removed custom flow cards and moved automation to Homey built-in triggers/actions.",
+    "he": "הוסרו כרטיסי Flow מותאמים אישית והאוטומציה עברה לטריגרים/פעולות המובנים של Homey."
   }
 }

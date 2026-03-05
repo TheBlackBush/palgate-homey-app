@@ -9,21 +9,6 @@ class PalGateApp extends Homey.App {
     this.log('PalGate app initialized');
     this._linkSessions = new Map();
 
-    this._triggerGateOpenedCard = this.homey.flow.getDeviceTriggerCard('gate_opened');
-
-    const action = this.homey.flow.getActionCard('open_gate');
-    action.registerRunListener(async ({ device }) => {
-      if (!device || typeof device.openGate !== 'function') {
-        throw new Error('Invalid PalGate device');
-      }
-      await device.openGate();
-      return true;
-    });
-  }
-
-  async triggerGateOpened(device) {
-    if (!this._triggerGateOpenedCard || !device) return;
-    await this._triggerGateOpenedCard.trigger(device, {}, {});
   }
 
   async initLinkSession() {
