@@ -34,6 +34,7 @@ Thumbs.db
 # Test/build artifacts
 coverage/
 .nyc_output/
+dist/
 
 # Local planning docs
 MIGRATION-PLAN.md

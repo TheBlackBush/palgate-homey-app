@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1 (2026-03-13)
+- Updated `.gitignore` with additional build artifact ignore (`dist/`).
+- Updated README with release automation details and required publish secret.
+- Bumped app/package version to `0.4.1`.
+
 ## 0.4.0 (2026-03-13)
 - Updated app and driver visual assets for improved Homey App Store compliance.
 - Updated repository references in README to the new GitHub owner/repo.

@@ -32,6 +32,12 @@ homey app validate
 homey app run
 ```
 
+## Release automation
+
+- PRs and pushes to `main` run Homey app validation.
+- Publishing a new GitHub Release triggers automatic Homey App Store publish.
+- Required repo secret for publish workflow: `HOMEY_PAT`.
+
 ## Notes
 
 - This app triggers gate open; it does not provide reliable physical open/closed state from PalGate.
