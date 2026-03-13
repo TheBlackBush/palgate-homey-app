@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0 (2026-03-13)
+- Updated app and driver visual assets for improved Homey App Store compliance.
+- Updated repository references in README to the new GitHub owner/repo.
+- Extended `.gitignore` with additional temporary/test artifact patterns.
+- Bumped app/package version to `0.4.0`.
+
 ## 0.3.5 (2026-03-05)
 - Removed custom Flow cards (`open_gate`, `gate_opened`).
 - Switched to Homey built-in capability triggers/actions for gate control automation.

@@ -1,8 +1,8 @@
 # PalGate Homey App (converted from homebridge-palgate)
 
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/BuSHari/palgate-homey-app?sort=semver)](https://github.com/BuSHari/palgate-homey-app/releases)
-[![GitHub last commit](https://img.shields.io/github/last-commit/BuSHari/palgate-homey-app)](https://github.com/BuSHari/palgate-homey-app/commits/main)
-[![GitHub issues](https://img.shields.io/github/issues/BuSHari/palgate-homey-app)](https://github.com/BuSHari/palgate-homey-app/issues)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/TheBlackBush/palgate-homey-app?sort=semver)](https://github.com/TheBlackBush/palgate-homey-app/releases)
+[![GitHub last commit](https://img.shields.io/github/last-commit/TheBlackBush/palgate-homey-app)](https://github.com/TheBlackBush/palgate-homey-app/commits/main)
+[![GitHub issues](https://img.shields.io/github/issues/TheBlackBush/palgate-homey-app)](https://github.com/TheBlackBush/palgate-homey-app/issues)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](./LICENSE)
 
 ## Current status
@@ -45,7 +45,7 @@ API logic discovered by [@DonutByte](https://github.com/DonutByte).
 
 Rewrite and platform migration by [@Knilo](https://github.com/Knilo).
 
-Homey app conversion by [@BuSHari](https://github.com/BuSHari).
+Homey app conversion by [@TheBlackBush](https://github.com/TheBlackBush).
 
 ## License
 
