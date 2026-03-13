@@ -13,5 +13,13 @@
   "0.3.5": {
     "en": "Removed custom flow cards and moved automation to Homey built-in triggers/actions.",
     "he": "הוסרו כרטיסי Flow מותאמים אישית והאוטומציה עברה לטריגרים/פעולות המובנים של Homey."
+  },
+  "0.4.0": {
+    "en": "Updated app and driver visual assets, refreshed repository metadata, and improved ignore patterns.",
+    "he": "עודכנו נכסים גרפיים לאפליקציה ולדרייבר, רועננו פרטי הריפו ועודכנו דפוסי ignore."
+  },
+  "0.4.1": {
+    "en": "Added release automation notes in README and updated build artifact ignores.",
+    "he": "נוספו הערות אוטומציית שחרור ב-README ועודכנו הגדרות ignore לארטיפקטים."
   }
 }
