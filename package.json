@@ -1,6 +1,6 @@
 {
   "name": "com.pal-es",
-  "version": "0.3.5",
+  "version": "0.4.0",
   "main": "app.js",
   "scripts": {
     "lint": "eslint --ext .js --ignore-path .gitignore .",
