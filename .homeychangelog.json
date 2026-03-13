@@ -21,5 +21,9 @@
   "0.4.1": {
     "en": "Added release automation notes in README and updated build artifact ignores.",
     "he": "נוספו הערות אוטומציית שחרור ב-README ועודכנו הגדרות ignore לארטיפקטים."
+  },
+  "0.4.2": {
+    "en": "Added required Homey changelog entries and re-triggered automatic publish flow.",
+    "he": "נוספו רשומות changelog נדרשות ל-Homey והופעלה מחדש זרימת הפרסום האוטומטית."
   }
 }

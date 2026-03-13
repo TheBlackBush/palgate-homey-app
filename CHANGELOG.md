@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.2 (2026-03-13)
+- Added missing Homey changelog entries required for headless publish flow.
+- Prepared follow-up release to re-trigger automatic Homey publish.
+
 ## 0.4.1 (2026-03-13)
 - Updated `.gitignore` with additional build artifact ignore (`dist/`).
 - Updated README with release automation details and required publish secret.
