@@ -29,5 +29,9 @@
   "0.4.3": {
     "en": "Updated repository URLs in app metadata, refreshed README badges to for-the-badge, and added Ko-fi badge.",
     "he": "עודכנו כתובות הריפו במטא-דאטה, רועננו badges ב-README לסגנון for-the-badge ונוספה תגית Ko-fi."
+  },
+  "0.4.4": {
+    "en": "The app's support and bug report links now open the new PalGate Control user guide and the shared support page.",
+    "he": "קישורי התמיכה והדיווח על תקלות פותחים כעת את מדריך המשתמש החדש של PalGate Control ואת דף התמיכה המשותף."
   }
 }

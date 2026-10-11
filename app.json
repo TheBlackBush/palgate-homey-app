@@ -1,6 +1,6 @@
 {
   "id": "com.pal-es",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "compatibility": ">=12.0.0",
   "sdk": 3,
   "platforms": [
@@ -65,12 +65,12 @@
       "path": "/confirm_link"
     }
   },
-  "homepage": "https://www.pal-es.com",
+  "homepage": "https://github.com/TheBlackBush/homey-apps-support",
   "source": "https://github.com/TheBlackBush/palgate-homey-app",
   "bugs": {
-    "url": "https://github.com/TheBlackBush/palgate-homey-app/issues"
+    "url": "https://github.com/TheBlackBush/homey-apps-support/issues"
   },
-  "support": "https://github.com/TheBlackBush/palgate-homey-app/issues",
+  "support": "https://github.com/TheBlackBush/homey-apps-support/wiki/PalGate-Control",
   "tags": {
     "en": [
       "palgate",
