@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.4 (2026-10-11)
+- App Store support link now opens the PalGate Control user guide (homey-apps-support wiki).
+- Homepage and bug report links now point to the homey-apps-support repository.
+
 ## 0.4.3 (2026-03-16)
 - Updated app metadata repository links in `app.json` (`source`, `bugs.url`, `support`) to `TheBlackBush/palgate-homey-app`.
 - Updated README badges to `for-the-badge` style.
