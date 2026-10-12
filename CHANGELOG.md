@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 (2026-10-12)
+- Redesigned the app settings page on the Homey Style Library: connection status badge, numbered linking steps, and a QR code with a countdown and "Get a new code" when it expires.
+- Linking with the PalGate app now saves the connection by itself (no Save step).
+- New Test connection button that checks the account with PalGate and shows how many gates it can open; new Link again and Disconnect buttons.
+- The gate open time is now picked in seconds and saves on change.
+- Manual entry moved to a collapsed "Connect with a session token" section that checks the phone number and token format and tests the details before saving.
+- New app API endpoint `POST /test_connection`.
+
 ## 0.4.4 (2026-10-11)
 - App Store support link now opens the PalGate Control user guide (homey-apps-support wiki).
 - Homepage and bug report links now point to the homey-apps-support repository.

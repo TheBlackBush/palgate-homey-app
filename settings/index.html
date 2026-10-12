@@ -1,318 +1,608 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
   <style>
-    :root {
-      --brand-blue: #23aae1;
-      --brand-gray: #414143;
+    /* Built on the Homey Style Library: only Homey variables, so the page matches the rest of the Homey app. */
+    .pg-card {
+      background: var(--homey-color-component);
+      border-radius: var(--homey-border-radius);
+      box-shadow: var(--homey-box-shadow-light);
+      padding: var(--homey-su-2);
+      margin-bottom: var(--homey-su-3);
     }
-
-    .brand-shell { padding-top: 8px; }
-
-    .brand-card {
-      border: 1px solid #e6edf3;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 14px;
-      background: #f8fcff;
-    }
-
-    .brand-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    .brand-primary {
-      background: var(--brand-blue) !important;
-      color: #fff !important;
-      border: 0 !important;
-    }
-
-    .brand-secondary {
-      background: #eef4f8 !important;
-      color: var(--brand-gray) !important;
-      border: 1px solid #d6e3ee !important;
-    }
-
-    #qrWrap {
-      margin-top: 10px;
-      display: none;
-      border: 1px dashed #b8d9ea;
-      border-radius: 10px;
-      padding: 10px;
-      background: #fff;
-    }
-
-    #qr {
-      max-width: 220px;
-      width: 100%;
-      border-radius: 8px;
-      border: 1px solid #d6e3ee;
-      background: #fff;
-    }
-
-    .hint { opacity: .8; font-size: 12px; margin-top: 6px; }
-
-    #status {
-      margin-top: 12px;
-      min-height: 20px;
-      font-size: 13px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      display: none;
-      font-weight: 600;
-    }
-
-    .token-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
+    .pg-card-title {
+      display: flex;
       align-items: center;
+      justify-content: space-between;
+      gap: var(--homey-su-1);
+      margin: 0 0 var(--homey-su-2);
+      font-size: var(--homey-font-size-medium);
+      font-weight: var(--homey-font-weight-bold);
+      color: var(--homey-color-text);
     }
+    .pg-text {
+      margin: 0 0 var(--homey-su-2);
+      font-size: var(--homey-font-size-small);
+      line-height: 1.5;
+      color: var(--homey-color-text-light);
+    }
+    [hidden] { display: none !important; }
 
-    .brand-footer {
-      margin-top: 14px;
+    /* Connection badge */
+    .pg-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: var(--homey-font-size-small);
+      font-weight: var(--homey-font-weight-medium);
+      background: var(--homey-color-mono-02);
+      color: var(--homey-color-text-light);
+      white-space: nowrap;
+    }
+    .pg-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--homey-color-mono-30);
+    }
+    .pg-badge.is-on { color: var(--homey-color-text); }
+    .pg-badge.is-on::before { background: var(--homey-color-green); }
+
+    /* Numbered steps */
+    .pg-steps {
+      list-style: none;
+      counter-reset: step;
+      margin: 0 0 var(--homey-su-2);
+      padding: 0;
+    }
+    .pg-steps li {
+      counter-increment: step;
+      display: flex;
+      gap: var(--homey-su-1);
+      align-items: flex-start;
+      margin-bottom: var(--homey-su-1);
+      font-size: var(--homey-font-size-small);
+      line-height: 22px;
+      color: var(--homey-color-text);
+    }
+    .pg-steps li::before {
+      content: counter(step);
+      flex: 0 0 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--homey-color-blue-o-05);
+      color: var(--homey-color-highlight);
+      font-weight: var(--homey-font-weight-bold);
+      font-size: 13px;
       text-align: center;
     }
 
-    .brand-footer img {
-      max-width: 90px;
+    /* QR code */
+    .pg-qr {
+      text-align: center;
+      padding: var(--homey-su-2) 0 var(--homey-su-1);
+    }
+    .pg-qr img {
+      display: block;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto var(--homey-su-2);
+      padding: var(--homey-su-1);
+      background: var(--homey-color-white);
+      border: 1px solid var(--homey-color-line);
+      border-radius: var(--homey-border-radius);
+    }
+    .pg-qr-status {
+      font-size: var(--homey-font-size-small);
+      font-weight: var(--homey-font-weight-medium);
+      color: var(--homey-color-text);
+    }
+    .pg-qr-timer {
+      margin-top: 2px;
+      font-size: var(--homey-font-size-small);
+      color: var(--homey-color-text-light);
+      font-variant-numeric: tabular-nums;
+    }
+    .pg-spinner {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-inline-end: 6px;
+      vertical-align: -1px;
+      border: 2px solid var(--homey-color-mono-10);
+      border-top-color: var(--homey-color-highlight);
+      border-radius: 50%;
+      animation: pg-spin 0.8s linear infinite;
+    }
+    @keyframes pg-spin { to { transform: rotate(360deg); } }
+
+    /* Connected details */
+    .pg-rows { margin: 0 0 var(--homey-su-2); }
+    .pg-row {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--homey-su-2);
+      padding: 10px 0;
+      border-bottom: 1px solid var(--homey-color-line);
+      font-size: var(--homey-font-size-small);
+    }
+    .pg-row:last-child { border-bottom: 0; }
+    .pg-row dt { color: var(--homey-color-text-light); }
+    .pg-row dd { margin: 0; color: var(--homey-color-text); font-weight: var(--homey-font-weight-medium); text-align: end; }
+
+    .pg-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--homey-su-1);
+    }
+    .pg-actions > * { flex: 1 1 auto; }
+    .pg-actions > [class*='homey-button'] { flex: 1 1 0; min-width: 0; }
+    /* Tonal buttons: a light tint of the text color, so they read as buttons on the white card. */
+    body .pg-tonal[class*='-secondary'] { --homey-button-background: rgba(0, 130, 250, 0.1); }
+    body .pg-tonal[class*='-secondary']:hover { --homey-button-background: rgba(0, 130, 250, 0.16); }
+    body .pg-tonal[class*='-danger'] { --homey-button-background: rgba(216, 28, 29, 0.08); }
+    body .pg-tonal[class*='-danger']:hover { --homey-button-background: rgba(216, 28, 29, 0.14); }
+    .pg-full {
+      display: block;
       width: 100%;
-      height: auto;
-      opacity: .95;
+      margin-top: var(--homey-su-2);
     }
 
-    .brand-footer .caption {
-      margin-top: 6px;
-      font-size: 12px;
-      color: #6b7280;
+    /* Inline feedback */
+    .pg-msg {
+      margin-top: var(--homey-su-2);
+      padding: 10px 12px;
+      border-radius: var(--homey-border-radius-small);
+      font-size: var(--homey-font-size-small);
+      line-height: 1.4;
+      background: var(--homey-color-mono-02);
+      color: var(--homey-color-text);
     }
+    .pg-msg:empty { display: none; }
+    .pg-msg.is-error {
+      background: rgba(216, 28, 29, 0.08);
+      color: var(--homey-color-text-danger);
+    }
+    .pg-msg.is-ok {
+      background: rgba(63, 199, 0, 0.1);
+    }
+
+    /* Field hints */
+    .pg-hint {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--homey-color-text-light);
+    }
+    .pg-input-row {
+      display: flex;
+      gap: var(--homey-su-1);
+    }
+    .pg-input-row .homey-form-input { flex: 1 1 auto; min-width: 0; }
+    .pg-input-row button { flex: 0 0 auto; }
+
+    /* Collapsible manual entry */
+    .pg-details > summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: var(--homey-font-size-default);
+      font-weight: var(--homey-font-weight-medium);
+      color: var(--homey-color-text);
+    }
+    .pg-details > summary::-webkit-details-marker { display: none; }
+    .pg-details > summary::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-inline-end: 2px solid var(--homey-color-mono-40);
+      border-bottom: 2px solid var(--homey-color-mono-40);
+      transform: rotate(45deg);
+      transition: transform var(--homey-duration-fast);
+      margin-inline-end: 4px;
+    }
+    .pg-details[open] > summary::after { transform: rotate(-135deg); }
+    .pg-details[open] > summary { margin-bottom: var(--homey-su-2); }
   </style>
 </head>
 <body>
-  <div class="brand-shell">
-    <header class="homey-header">
-      <h1 class="homey-title" id="title">PalGate Settings</h1>
-      <p class="homey-subtitle" id="subtitle">Link your PalGate account and configure gate behavior.</p>
-    </header>
+  <header class="homey-header">
+    <h1 class="homey-title" data-i18n="settings.title"></h1>
+    <p class="homey-subtitle" data-i18n="settings.subtitle"></p>
+  </header>
 
-    <div class="brand-card">
-      <div class="brand-actions">
-        <button class="homey-button-primary brand-primary" id="linkStart">Link with PalGate App</button>
+  <!-- Account -->
+  <section class="pg-card" aria-labelledby="accountTitle">
+    <h2 class="pg-card-title">
+      <span id="accountTitle" data-i18n="settings.account"></span>
+      <span class="pg-badge" id="badge"></span>
+    </h2>
+
+    <!-- Not connected -->
+    <div id="viewDisconnected" hidden>
+      <p class="pg-text" data-i18n="settings.notConnectedHint"></p>
+      <ol class="pg-steps">
+        <li data-i18n="settings.step1"></li>
+        <li data-i18n="settings.step2"></li>
+        <li data-i18n="settings.step3"></li>
+      </ol>
+      <button type="button" class="homey-button-primary-full" id="linkStart" data-i18n="settings.link"></button>
+    </div>
+
+    <!-- QR shown -->
+    <div id="viewLinking" hidden>
+      <ol class="pg-steps">
+        <li data-i18n="settings.step2"></li>
+        <li data-i18n="settings.step3"></li>
+      </ol>
+      <div class="pg-qr">
+        <img id="qr" alt="" />
+        <div class="pg-qr-status" id="qrStatus"></div>
+        <div class="pg-qr-timer" id="qrTimer"></div>
       </div>
-
-      <div id="qrWrap">
-        <img id="qr" alt="PalGate link QR" />
-        <div class="hint" id="qrHint">Open the PalGate App, and navigate to Device Linking > Link a Device and then scan the QR code. The linking will complete and configuration will be updated automatically.</div>
+      <div class="pg-actions">
+        <button type="button" class="homey-button-primary-full" id="linkRetry" data-i18n="settings.newCode" hidden></button>
+        <button type="button" class="homey-button-secondary-shadow" id="linkCancel" data-i18n="settings.cancel"></button>
       </div>
     </div>
 
-    <form class="homey-form" onsubmit="return false;">
-      <fieldset class="homey-form-fieldset">
-        <legend class="homey-form-legend" id="legendConnection">Connection</legend>
+    <!-- Connected -->
+    <div id="viewConnected" hidden>
+      <dl class="pg-rows">
+        <div class="pg-row"><dt data-i18n="settings.phone"></dt><dd id="phoneMasked"></dd></div>
+        <div class="pg-row"><dt data-i18n="settings.accountType"></dt><dd id="typeLabel"></dd></div>
+      </dl>
+      <div class="pg-actions">
+        <button type="button" class="homey-button-primary-shadow" id="testBtn" data-i18n="settings.test"></button>
+        <button type="button" class="homey-button-secondary pg-tonal" id="relinkBtn" data-i18n="settings.relink"></button>
+      </div>
+      <button type="button" class="homey-button-danger pg-tonal pg-full" id="disconnectBtn" data-i18n="settings.disconnect"></button>
+    </div>
 
+    <div class="pg-msg" id="accountMsg" role="status" aria-live="polite"></div>
+  </section>
+
+  <!-- Gate tile behavior -->
+  <section class="pg-card" aria-labelledby="behaviorTitle">
+    <h2 class="pg-card-title" id="behaviorTitle" data-i18n="settings.behavior"></h2>
+    <div class="homey-form-group">
+      <label class="homey-form-label" for="openFor" data-i18n="settings.openFor"></label>
+      <select class="homey-form-select" id="openFor"></select>
+      <div class="pg-hint" data-i18n="settings.openForHint"></div>
+    </div>
+    <div class="pg-msg" id="behaviorMsg" role="status" aria-live="polite"></div>
+  </section>
+
+  <!-- Manual entry -->
+  <section class="pg-card">
+    <details class="pg-details" id="manual">
+      <summary data-i18n="settings.manual"></summary>
+      <p class="pg-text" data-i18n="settings.manualHint"></p>
+      <form class="homey-form" id="manualForm" novalidate>
         <div class="homey-form-group">
-          <label class="homey-form-label" for="phone" id="labelPhone">Phone Number</label>
-          <input class="homey-form-input" id="phone" type="text" inputmode="numeric" placeholder="9725xxxxxxx" />
+          <label class="homey-form-label" for="phone" data-i18n="settings.phone"></label>
+          <input class="homey-form-input" id="phone" type="text" inputmode="numeric" autocomplete="off" />
+          <div class="pg-hint" data-i18n="settings.phoneHint"></div>
         </div>
-
         <div class="homey-form-group">
-          <label class="homey-form-label" for="type" id="labelType">Token Type</label>
+          <label class="homey-form-label" for="type" data-i18n="settings.tokenType"></label>
           <select class="homey-form-select" id="type">
-            <option value="0">0 - SMS</option>
-            <option value="1">1 - Primary</option>
-            <option value="2">2 - Secondary</option>
+            <option value="2" data-i18n="settings.type2"></option>
+            <option value="1" data-i18n="settings.type1"></option>
+            <option value="0" data-i18n="settings.type0"></option>
           </select>
         </div>
-
         <div class="homey-form-group">
-          <label class="homey-form-label" for="token" id="labelToken">Session Token (hex)</label>
-          <div class="token-row">
-            <input class="homey-form-input" id="token" type="password" placeholder="Paste token" />
-            <button class="homey-button-secondary brand-secondary" id="toggleToken" type="button">Show</button>
+          <label class="homey-form-label" for="token" data-i18n="settings.sessionToken"></label>
+          <div class="pg-input-row">
+            <input class="homey-form-input" id="token" type="password" autocomplete="off" spellcheck="false" />
+            <button class="homey-button-secondary-shadow homey-button-small" id="toggleToken" type="button" data-i18n="settings.show"></button>
           </div>
         </div>
-      </fieldset>
-
-      <fieldset class="homey-form-fieldset">
-        <legend class="homey-form-legend" id="legendBehavior">Behavior</legend>
-        <div class="homey-form-group">
-          <label class="homey-form-label" for="autoOffMs" id="labelAutoOff">Auto turn-off delay (ms, 2000-60000)</label>
-          <input class="homey-form-input" id="autoOffMs" type="number" min="2000" max="60000" step="100" value="5000" />
-        </div>
-      </fieldset>
-
-      <button class="homey-button-primary-full brand-primary" id="save">Save</button>
-    </form>
-
-    <div id="status"></div>
-
-    <div class="brand-footer">
-      <img src="./assets/palgate-logo.png" alt="PalGate logo" />
-      <div class="caption">PalGate</div>
-    </div>
-  </div>
+        <button class="homey-button-primary-full" id="saveManual" type="submit" data-i18n="settings.saveManual"></button>
+      </form>
+      <div class="pg-msg" id="manualMsg" role="status" aria-live="polite"></div>
+    </details>
+  </section>
 
   <script>
-    let linkUniqueId = null;
+    const LINK_TIMEOUT_MS = 120000;
+    const POLL_MS = 3000;
+    const OPEN_FOR_SECONDS = [2, 3, 5, 10, 15, 20, 30, 45, 60];
+    const DEFAULT_OPEN_FOR_MS = 5000;
+
+    let H = null;
+    let linkId = null;
+    let linkStartedAt = 0;
     let pollTimer = null;
-    let pollStartedAt = 0;
-    let _homey = null;
+    let tickTimer = null;
 
-    function t(key, fallback) {
-      try { return (_homey && _homey.__(key)) || fallback; } catch (e) { return fallback; }
+    const $ = (id) => document.getElementById(id);
+    const t = (key, tokens) => {
+      const value = H.__(key, tokens);
+      return value || key;
+    };
+
+    // Promise wrappers around the callback API.
+    const call = (fn, ...args) => new Promise((resolve, reject) => {
+      fn.call(H, ...args, (err, result) => (err ? reject(err) : resolve(result)));
+    });
+    const getSetting = (key) => call(H.get, key);
+    const setSetting = (key, value) => call(H.set, key, value);
+    const unsetSetting = (key) => call(H.unset, key);
+    const api = (method, path, body) => call(H.api, method, path, body);
+    const errorText = (err) => (err && (err.message || err.error)) || String(err || 'unknown error');
+
+    function showMsg(id, text, kind) {
+      const el = $(id);
+      el.textContent = text || '';
+      el.classList.toggle('is-error', kind === 'error');
+      el.classList.toggle('is-ok', kind === 'ok');
     }
 
-    function setStatus(msg, isError) {
-      const el = document.getElementById('status');
-      el.textContent = msg;
-      el.style.display = 'block';
-      if (isError) {
-        el.style.color = '#991b1b';
-        el.style.background = '#fee2e2';
-        el.style.border = '1px solid #fecaca';
-      } else {
-        el.style.color = '#065f46';
-        el.style.background = '#dcfce7';
-        el.style.border = '1px solid #bbf7d0';
-      }
-    }
-
-    function clampAutoOff(v) {
-      let n = Number(v);
-      if (!Number.isFinite(n)) n = 5000;
-      if (n < 2000) n = 2000;
-      if (n > 60000) n = 60000;
-      return Math.round(n);
-    }
-
-    function saveAll(Homey) {
-      const token = document.getElementById('token').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const type = Number(document.getElementById('type').value);
-      const autoOffMs = clampAutoOff(document.getElementById('autoOffMs').value);
-      document.getElementById('autoOffMs').value = String(autoOffMs);
-
-      if (!token || !phone) { const b=document.getElementById('save'); if (b){b.disabled=false; b.textContent=t('settings.save','Save');} return setStatus(t('status.required','Token and phone are required'), true); }
-
-      Homey.set('palgate_session_token', token, (e1) => {
-        if (e1) { const b=document.getElementById('save'); if (b){b.disabled=false; b.textContent=t('settings.save','Save');} return setStatus(t('status.saveTokenFail','Failed saving token: ') + e1.message, true); }
-        Homey.set('palgate_phone_number', phone, (e2) => {
-          if (e2) { const b=document.getElementById('save'); if (b){b.disabled=false; b.textContent=t('settings.save','Save');} return setStatus(t('status.savePhoneFail','Failed saving phone: ') + e2.message, true); }
-          Homey.set('palgate_token_type', type, (e3) => {
-            if (e3) { const b=document.getElementById('save'); if (b){b.disabled=false; b.textContent=t('settings.save','Save');} return setStatus(t('status.saveTypeFail','Failed saving token type: ') + e3.message, true); }
-            Homey.set('palgate_auto_off_ms', autoOffMs, (e4) => {
-              if (e4) { const b=document.getElementById('save'); if (b){b.disabled=false; b.textContent=t('settings.save','Save');} return setStatus(t('status.saveAutoOffFail','Failed saving auto off delay: ') + e4.message, true); }
-              setStatus(t('status.saved','Saved successfully.'), false);
-              const saveBtn = document.getElementById('save');
-              if (saveBtn) {
-                const originalText = t('settings.save', 'Save');
-                saveBtn.textContent = 'Saved ✓';
-                saveBtn.disabled = true;
-                setTimeout(() => { saveBtn.textContent = originalText; saveBtn.disabled = false; }, 1800);
-              }
-            });
-          });
-        });
+    function translatePage() {
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        el.textContent = t(el.getAttribute('data-i18n'));
       });
+      $('phone').placeholder = t('settings.phonePlaceholder');
+      $('token').placeholder = t('settings.tokenPlaceholder');
+      $('qr').alt = t('settings.qrAlt');
     }
 
-    function stopPolling() {
-      if (pollTimer) {
+    function showView(name) {
+      $('viewDisconnected').hidden = name !== 'disconnected';
+      $('viewLinking').hidden = name !== 'linking';
+      $('viewConnected').hidden = name !== 'connected';
+      const on = name === 'connected';
+      $('badge').classList.toggle('is-on', on);
+      $('badge').textContent = t(on ? 'settings.connected' : 'settings.notConnected');
+    }
+
+    // Account state
+
+    async function loadAccount() {
+      const [token, phone, type] = await Promise.all([
+        getSetting('palgate_session_token'),
+        getSetting('palgate_phone_number'),
+        getSetting('palgate_token_type'),
+      ]);
+      const connected = Boolean(token && phone && type !== null && type !== undefined);
+
+      $('phone').value = phone || '';
+      $('token').value = token || '';
+      $('type').value = connected ? String(type) : '2';
+
+      if (connected) {
+        const digits = String(phone).slice(-4);
+        $('phoneMasked').textContent = `•••• ${digits}`;
+        $('phoneMasked').setAttribute('aria-label', t('settings.phoneEnding', { digits }));
+        $('typeLabel').textContent = t(`settings.type${Number(type)}`);
+      }
+      if (!linkId) showView(connected ? 'connected' : 'disconnected');
+      return connected;
+    }
+
+    // QR linking
+
+    function stopLinking() {
+      clearInterval(pollTimer);
+      clearInterval(tickTimer);
+      pollTimer = null;
+      tickTimer = null;
+      linkId = null;
+    }
+
+    function renderTimer() {
+      const left = Math.max(0, LINK_TIMEOUT_MS - (Date.now() - linkStartedAt));
+      if (left === 0) {
         clearInterval(pollTimer);
-        pollTimer = null;
+        clearInterval(tickTimer);
+        $('qr').style.opacity = '0.25';
+        $('qrStatus').textContent = t('settings.expired');
+        $('qrTimer').textContent = '';
+        $('linkRetry').hidden = false;
+        return;
+      }
+      const s = Math.ceil(left / 1000);
+      const time = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+      $('qrTimer').textContent = t('settings.expiresIn', { time });
+    }
+
+    async function startLinking() {
+      stopLinking();
+      showMsg('accountMsg', '');
+      $('linkStart').classList.add('is-loading');
+      try {
+        const result = await api('GET', '/init_link', null);
+        if (!result || !result.success) throw new Error(result && result.error);
+
+        linkId = result.uniqueId;
+        linkStartedAt = Date.now();
+        $('qr').src = result.qrUrl;
+        $('qr').style.opacity = '1';
+        $('qrStatus').innerHTML = '';
+        const spinner = document.createElement('span');
+        spinner.className = 'pg-spinner';
+        $('qrStatus').append(spinner, t('settings.waiting'));
+        $('linkRetry').hidden = true;
+        showView('linking');
+        renderTimer();
+        tickTimer = setInterval(renderTimer, 1000);
+        pollTimer = setInterval(checkLink, POLL_MS);
+      } catch (err) {
+        showMsg('accountMsg', t('status.initFail', { error: errorText(err) }), 'error');
+      } finally {
+        $('linkStart').classList.remove('is-loading');
       }
     }
 
-    function checkLink(Homey, silentWaiting = false) {
-      if (!linkUniqueId) return setStatus(t('status.startLinkFirst','Start linking first to generate QR.'), true);
+    async function checkLink() {
+      if (!linkId) return;
+      const id = linkId;
+      let result;
+      try {
+        result = await api('GET', `/confirm_link?uniqueId=${encodeURIComponent(id)}`, null);
+      } catch (err) {
+        return; // Temporary network problem: keep polling until the code expires.
+      }
+      if (id !== linkId || !result || result.waiting) return;
 
-      Homey.api('GET', '/confirm_link?uniqueId=' + encodeURIComponent(linkUniqueId), null, (err, result) => {
-        if (err || !result) return setStatus(t('status.checkLinkFail','Link check failed: ') + ((err && err.message) || 'unknown error'), true);
+      stopLinking();
+      if (!result.success) {
+        await loadAccount();
+        showMsg('accountMsg', t('status.linkFail', { error: result.error || 'unknown error' }), 'error');
+        return;
+      }
+      // The app stores the credentials itself; reload them from settings.
+      await loadAccount();
+      showMsg('accountMsg', t('status.linked'), 'ok');
+    }
 
-        if (result.waiting) {
-          if (!silentWaiting) setStatus(t('status.waiting','Waiting for confirmation from PalGate app...'), false);
-          if (Date.now() - pollStartedAt > 120000) {
-            stopPolling();
-            setStatus(t('status.stillWaiting','Still waiting. Please complete QR scan in PalGate app.'), true);
-          }
-          return;
+    async function cancelLinking() {
+      stopLinking();
+      showMsg('accountMsg', '');
+      await loadAccount();
+    }
+
+    // Connected actions
+
+    async function testConnection() {
+      const btn = $('testBtn');
+      btn.classList.add('is-loading');
+      btn.disabled = true;
+      showMsg('accountMsg', t('settings.testing'));
+      try {
+        const result = await api('POST', '/test_connection', {});
+        if (!result || !result.success) throw new Error(result && result.error);
+        const text = result.gates === 1
+          ? t('status.testOkOne')
+          : t('status.testOk', { count: result.gates });
+        showMsg('accountMsg', text, 'ok');
+      } catch (err) {
+        showMsg('accountMsg', t('status.testFail', { error: errorText(err) }), 'error');
+      } finally {
+        btn.classList.remove('is-loading');
+        btn.disabled = false;
+      }
+    }
+
+    function disconnect() {
+      H.confirm(t('settings.disconnectConfirm'), 'warning', async (err, ok) => {
+        if (err || !ok) return;
+        try {
+          await unsetSetting('palgate_session_token');
+          await unsetSetting('palgate_phone_number');
+          await unsetSetting('palgate_token_type');
+          await loadAccount();
+          showMsg('accountMsg', t('status.disconnected'));
+        } catch (e) {
+          showMsg('accountMsg', t('status.saveFail', { error: errorText(e) }), 'error');
         }
-
-        if (!result.success) {
-          stopPolling();
-          return setStatus(t('status.linkFail','Link failed: ') + (result.error || 'unknown error'), true);
-        }
-
-        stopPolling();
-        document.getElementById('phone').value = String(result.phoneNumber || '');
-        document.getElementById('token').value = String(result.sessionToken || '');
-        document.getElementById('type').value = String(result.tokenType);
-        document.getElementById('qr').src = '';
-        document.getElementById('qrWrap').style.display = 'none';
-        setStatus(t('status.linkSuccess','Link successful. Details were updated automatically. Click Save to persist.'), false);
       });
     }
 
-    function startPolling(Homey) {
-      stopPolling();
-      pollStartedAt = Date.now();
-      pollTimer = setInterval(() => checkLink(Homey, true), 3000);
+    // Gate tile behavior
+
+    function fillOpenFor(currentMs) {
+      const select = $('openFor');
+      const seconds = OPEN_FOR_SECONDS.slice();
+      const current = Math.round(currentMs / 100) / 10;
+      if (!seconds.includes(current)) seconds.push(current);
+      seconds.sort((a, b) => a - b);
+      select.innerHTML = '';
+      seconds.forEach((n) => {
+        const option = document.createElement('option');
+        option.value = String(Math.round(n * 1000));
+        option.textContent = t('settings.seconds', { n });
+        select.append(option);
+      });
+      select.value = String(Math.round(current * 1000));
     }
 
-    function onHomeyReady(Homey) {
-      _homey = Homey;
+    async function saveOpenFor() {
+      try {
+        await setSetting('palgate_auto_off_ms', Number($('openFor').value));
+        showMsg('behaviorMsg', t('status.saved'), 'ok');
+        setTimeout(() => showMsg('behaviorMsg', ''), 2000);
+      } catch (err) {
+        showMsg('behaviorMsg', t('status.saveFail', { error: errorText(err) }), 'error');
+      }
+    }
 
-      document.getElementById('title').textContent = t('settings.title', 'PalGate Settings');
-      document.getElementById('subtitle').textContent = t('settings.subtitle', 'Link your PalGate account and configure gate behavior.');
-      document.getElementById('linkStart').textContent = t('settings.link', 'Link with PalGate App');
-      document.getElementById('qrHint').textContent = t('settings.qrHint', 'Open the PalGate App, and navigate to Device Linking > Link a Device and then scan the QR code. The linking will complete and configuration will be updated automatically.');
-      document.getElementById('legendConnection').textContent = t('settings.connection', 'Connection');
-      document.getElementById('labelPhone').textContent = t('settings.phone', 'Phone Number');
-      document.getElementById('labelType').textContent = t('settings.tokenType', 'Token Type');
-      document.getElementById('labelToken').textContent = t('settings.sessionToken', 'Session Token (hex)');
-      document.getElementById('legendBehavior').textContent = t('settings.behavior', 'Behavior');
-      document.getElementById('labelAutoOff').textContent = t('settings.autoOff', 'Auto turn-off delay (ms, 2000-60000)');
-      document.getElementById('save').textContent = t('settings.save', 'Save');
-      document.getElementById('toggleToken').textContent = t('settings.show', 'Show');
+    // Manual entry
+
+    async function saveManual(event) {
+      event.preventDefault();
+      const phone = $('phone').value.replace(/[\s+-]/g, '');
+      const token = $('token').value.trim();
+      const type = Number($('type').value);
+
+      if (!/^\d{8,15}$/.test(phone)) return showMsg('manualMsg', t('status.phoneInvalid'), 'error');
+      if (!/^[0-9a-fA-F]{32}$/.test(token)) return showMsg('manualMsg', t('status.tokenInvalid'), 'error');
+
+      const btn = $('saveManual');
+      btn.classList.add('is-loading');
+      btn.disabled = true;
+      showMsg('manualMsg', t('settings.testing'));
+      try {
+        const result = await api('POST', '/test_connection', { sessionToken: token, phoneNumber: phone, tokenType: type });
+        if (!result || !result.success) throw new Error(result && result.error);
+        await setSetting('palgate_session_token', token);
+        await setSetting('palgate_phone_number', phone);
+        await setSetting('palgate_token_type', type);
+        await loadAccount();
+        showMsg('manualMsg', '');
+        showMsg('accountMsg', result.gates === 1
+          ? t('status.testOkOne')
+          : t('status.testOk', { count: result.gates }), 'ok');
+        $('manual').open = false;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        showMsg('manualMsg', t('status.testFail', { error: errorText(err) }), 'error');
+      } finally {
+        btn.classList.remove('is-loading');
+        btn.disabled = false;
+      }
+    }
+
+    function toggleToken() {
+      const input = $('token');
+      const hidden = input.type === 'password';
+      input.type = hidden ? 'text' : 'password';
+      $('toggleToken').textContent = t(hidden ? 'settings.hide' : 'settings.show');
+    }
+
+    async function onHomeyReady(Homey) {
+      H = Homey;
+      translatePage();
+
+      try {
+        await loadAccount();
+        const autoOff = Number(await getSetting('palgate_auto_off_ms'));
+        fillOpenFor(Number.isFinite(autoOff) && autoOff >= 2000 && autoOff <= 60000 ? autoOff : DEFAULT_OPEN_FOR_MS);
+      } catch (err) {
+        showMsg('accountMsg', errorText(err), 'error');
+      }
+
+      $('linkStart').addEventListener('click', startLinking);
+      $('linkRetry').addEventListener('click', startLinking);
+      $('linkCancel').addEventListener('click', cancelLinking);
+      $('relinkBtn').addEventListener('click', startLinking);
+      $('testBtn').addEventListener('click', testConnection);
+      $('disconnectBtn').addEventListener('click', disconnect);
+      $('openFor').addEventListener('change', saveOpenFor);
+      $('manualForm').addEventListener('submit', saveManual);
+      $('toggleToken').addEventListener('click', toggleToken);
+      window.addEventListener('beforeunload', stopLinking);
 
       Homey.ready();
-
-      Homey.get('palgate_session_token', (_, v) => { if (v) document.getElementById('token').value = v; });
-      Homey.get('palgate_phone_number', (_, v) => { if (v) document.getElementById('phone').value = v; });
-      Homey.get('palgate_token_type', (_, v) => { if (v !== null && v !== undefined) document.getElementById('type').value = String(v); });
-      Homey.get('palgate_auto_off_ms', (_, v) => { if (v !== null && v !== undefined) document.getElementById('autoOffMs').value = String(v); });
-
-      document.getElementById('save').addEventListener('click', () => {
-        const saveBtn = document.getElementById('save');
-        const originalText = saveBtn.textContent;
-        saveBtn.disabled = true;
-        saveBtn.textContent = 'Saving...';
-        saveAll(Homey);
-      });
-
-      document.getElementById('toggleToken').addEventListener('click', () => {
-        const token = document.getElementById('token');
-        const btn = document.getElementById('toggleToken');
-        const isHidden = token.type === 'password';
-        token.type = isHidden ? 'text' : 'password';
-        btn.textContent = isHidden ? t('settings.hide', 'Hide') : t('settings.show', 'Show');
-      });
-
-      document.getElementById('linkStart').addEventListener('click', () => {
-        Homey.api('GET', '/init_link', null, (err, result) => {
-          if (err || !result || !result.success) {
-            return setStatus(t('status.initFail','Failed to initialize link: ') + ((err && err.message) || (result && result.error) || 'unknown error'), true);
-          }
-          linkUniqueId = result.uniqueId;
-          document.getElementById('qr').src = result.qrUrl;
-          document.getElementById('qrWrap').style.display = 'block';
-          setStatus(t('status.qrReady','QR ready. Scan from PalGate app, detection is automatic...'), false);
-          startPolling(Homey);
-        });
-      });
-
-      window.addEventListener('beforeunload', stopPolling);
     }
   </script>
 </body>

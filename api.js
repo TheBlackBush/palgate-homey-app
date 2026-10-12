@@ -17,4 +17,12 @@ module.exports = {
       return { success: false, error: err.message };
     }
   },
+
+  async test_connection({ homey, body }) {
+    try {
+      return await homey.app.testConnection(body || {});
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  },
 };
