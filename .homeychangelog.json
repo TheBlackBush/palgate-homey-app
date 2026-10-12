@@ -33,5 +33,9 @@
   "0.4.4": {
     "en": "The app's support and bug report links now open the new PalGate Control user guide and the shared support page.",
     "he": "קישורי התמיכה והדיווח על תקלות פותחים כעת את מדריך המשתמש החדש של PalGate Control ואת דף התמיכה המשותף."
+  },
+  "0.5.0": {
+    "en": "Redesigned settings page: see at a glance whether you are connected, test the connection, link again or disconnect. Linking with the PalGate app now saves by itself, and the gate open time is set in seconds.",
+    "he": "עיצוב חדש לדף ההגדרות: רואים מיד אם מחוברים, בודקים את החיבור, מקשרים מחדש או מתנתקים. הקישור עם אפליקציית PalGate נשמר לבד, וזמן פתיחת השער מוגדר בשניות."
   }
 }

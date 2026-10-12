@@ -22,7 +22,8 @@ There is no test suite.
 
 **Credential flow.** All PalGate credentials are app-level Homey settings, not per-device: `palgate_session_token` (hex, 16 bytes), `palgate_phone_number`, `palgate_token_type` (0 = SMS, 1 = primary, 2 = secondary), plus `palgate_auto_off_ms`. They are written by the custom settings page `settings/index.html`, either manually or via the "link device" QR flow:
 - Settings page calls `GET /init_link` (`api.js` → `app.js#initLinkSession`), which creates an in-memory session keyed by a random UUID and returns a QR code (rendered through quickchart.io).
-- The user scans it with the PalGate mobile app; the settings page polls `GET /confirm_link`, which hits `api1.pal-es.com/v1/bt/un/secondary/init/{uuid}` until PalGate returns the user id, token and token type.
+- The user scans it with the PalGate mobile app; the settings page polls `GET /confirm_link` every 3 s (the QR expires after 2 minutes), which hits `api1.pal-es.com/v1/bt/un/secondary/init/{uuid}` until PalGate returns the user id, token and token type. `confirmLinkSession` then writes the three credential settings itself, so there is no Save step.
+- `POST /test_connection` (`app.js#testConnection`) validates credentials with PalGate and returns the gate count. With an empty body it uses the stored settings; the manual entry form passes its values in the body and only saves them if the test succeeds.
 - Link sessions live only in memory (`this._linkSessions`); an app restart loses them.
 
 **API layering.**
@@ -32,7 +33,9 @@ There is no test suite.
 
 **Multi-output gates.** `listGates` expands a PalGate device with multiple outputs into separate Homey devices whose id is `deviceId:outputNum`. `openGate` in `api.raw.js` splits that back into device id and `outputNum`. Single-output devices use the bare id (output 1).
 
-**Device behavior** (`drivers/palgate-gate/`). Class `garagedoor` with only `garagedoor_closed`. The gate is stateless: setting `garagedoor_closed` to `false` sends the open command, then the device flips back to closed after `palgate_auto_off_ms` (clamped 2000 to 60000, default 5000). API failures also reset to closed. There are no custom Flow cards (removed in 0.3.5); automation uses Homey's built-in garage door cards. The README's mention of an "Open PalGate gate" action card is stale.
+**Device behavior** (`drivers/palgate-gate/`). Class `garagedoor` with only `garagedoor_closed`. The gate is stateless: setting `garagedoor_closed` to `false` sends the open command, then the device flips back to closed after `palgate_auto_off_ms` (clamped 2000 to 60000, default 5000). API failures also reset to closed. There are no custom Flow cards (removed in 0.3.5); automation uses Homey's built-in garage door cards.
+
+**Settings page.** `settings/index.html` uses only the Homey Style Library classes and `--homey-*` CSS variables (no custom palette), and all text comes from `locales/*.json` under `settings.*` and `status.*`. Gotchas: Homey's `confirm` signature is `(text, icon, callback)`; white `-secondary`/`-danger` buttons are nearly invisible on white cards, so the page uses tinted `.pg-tonal` variants; `homey-button-transparent` renders as plain text.
 
 **Manifest.** There is no `.homeycompose/` directory, so `app.json` is the source of truth and is edited directly. `drivers/palgate-gate/driver.compose.json` duplicates the driver block; keep the two in sync if you change the driver.
 
